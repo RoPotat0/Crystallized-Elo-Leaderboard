@@ -44,7 +44,7 @@ body::after {
   background: var(--card); border: 1px solid var(--border); border-radius: 20px;
   box-shadow: 0 40px 80px -20px rgba(0,0,0,0.7), inset 0 1px 0 rgba(255,255,255,0.05); overflow: hidden;
 }
-.lb-header { padding: 28px 28px 0; display: flex; align-items: center; justify-content: space-between; }
+.lb-header { padding: 28px 28px 16px; display: flex; align-items: center; justify-content: space-between; }
 .lb-title { font-family: 'Bebas Neue', sans-serif; font-size: 1.6rem; letter-spacing: 2px; color: var(--text); }
 .lb-refresh {
   background: var(--purple-dim); border: 1px solid rgba(192,38,211,0.3); color: var(--purple);
@@ -52,15 +52,23 @@ body::after {
   cursor: pointer; font-family: 'DM Sans', sans-serif; transition: all 0.2s;
 }
 .lb-refresh:hover { background: rgba(192,38,211,0.25); }
-.lb-list { padding: 16px 20px 24px; display: flex; flex-direction: column; gap: 8px; }
+.search-container { padding: 0 28px 16px; }
+.search-input {
+  width: 100%; padding: 12px 16px; background: rgba(255,255,255,0.03); 
+  border: 1px solid var(--border); border-radius: 10px; color: var(--text); 
+  font-family: 'DM Sans', sans-serif; font-size: 14px; transition: all 0.2s;
+}
+.search-input:focus { outline: none; border-color: rgba(192,38,211,0.5); background: rgba(255,255,255,0.05); }
+.lb-list { padding: 8px 20px 24px; display: flex; flex-direction: column; gap: 8px; }
 .lb-loading { text-align: center; color: var(--text-dim); padding: 40px; font-size: 14px; }
 .lb-error { text-align: center; color: var(--danger); padding: 40px 28px; font-size: 14px; }
 .lb-row {
   display: grid; grid-template-columns: 36px 1fr auto auto; align-items: center; gap: 12px;
   background: rgba(255,255,255,0.025); border: 1px solid var(--border); border-radius: 12px;
   padding: 12px 16px; transition: all 0.2s; animation: fadeUp 0.4s ease both;
+  cursor: default;
 }
-.lb-row:hover { border-color: rgba(192,38,211,0.3); background: rgba(192,38,211,0.05); }
+.lb-row:hover { border-color: rgba(192,38,211,0.3); background: rgba(192,38,211,0.05); transform: translateY(-2px); }
 .lb-row.top1 { border-color: rgba(255,215,0,0.3);   background: rgba(255,215,0,0.04); }
 .lb-row.top2 { border-color: rgba(192,192,192,0.3); background: rgba(192,192,192,0.04); }
 .lb-row.top3 { border-color: rgba(205,127,50,0.3);  background: rgba(205,127,50,0.04); }
@@ -72,6 +80,7 @@ body::after {
 .lb-empty { text-align: center; padding: 48px 28px; color: var(--text-dim); }
 .lb-empty .empty-icon { font-size: 2.5rem; margin-bottom: 12px; }
 .lb-empty p { font-size: 14px; }
+.footer-text { margin-top: 16px; font-size: 12px; color: var(--text-dim); text-align: center; position: relative; z-index: 1;}
 </style>
 </head>
 <body>
@@ -84,11 +93,19 @@ body::after {
     <span class="lb-title">Rankings</span>
     <button class="lb-refresh" onclick="loadLeaderboard()">↻ Refresh</button>
   </div>
+  <div class="search-container">
+    <input type="text" id="searchInput" class="search-input" placeholder="🔍 Search for a player..." oninput="filterLeaderboard()">
+  </div>
   <div class="lb-list" id="lb-list">
     <div class="lb-loading">Loading rankings...</div>
   </div>
 </div>
+<div class="footer-text" id="last-updated">Updating...</div>
+
 <script>
+let globalPlayers = []; 
+let allData = [];
+
 function getRank(elo, allPlayers=[]) {
   if (allPlayers.length<=1) {
     if (elo<600)  return {name:'Faint',    color:'#00FF7F',bg:'rgba(0,255,127,0.2)',  emoji:'🟢'};
@@ -107,25 +124,57 @@ function getRank(elo, allPlayers=[]) {
   if (pct<=65.57) return {name:'Refined',  color:'#00BFFF',bg:'rgba(0,191,255,0.2)', emoji:'🔵'};
   return           {name:'Faint',    color:'#00FF7F',bg:'rgba(0,255,127,0.2)', emoji:'🟢'};
 }
+
 function escapeHtml(s){return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+
+function renderList(playersToRender) {
+  const list = document.getElementById('lb-list');
+  if(!playersToRender.length){
+    list.innerHTML='<div class="lb-empty"><div class="empty-icon">🔍</div><p>No players found!</p></div>';
+    return;
+  }
+  
+  const medals=['🥇','🥈','🥉'];
+  list.innerHTML = playersToRender.map((p, index) => {
+    const realIndex = globalPlayers.findIndex(gp => gp.discordId === p.discordId);
+    const r = getRank(p.elo, allData);
+    const pos = medals[realIndex] ?? `#${realIndex+1}`;
+    const tc = (realIndex < 3) ? `top${realIndex+1}` : '';
+    
+    return `<div class="lb-row ${tc}" style="animation-delay:${index*0.03}s" title="Discord ID: ${p.discordId}">
+      <div class="lb-pos">${pos}</div>
+      <div class="lb-name">${escapeHtml(p.name)}</div>
+      <span class="lb-badge" style="background:${r.bg};color:${r.color};border:1px solid ${r.color}40">${r.emoji} ${r.name}</span>
+      <div class="lb-elo">${p.elo}</div>
+    </div>`;
+  }).join('');
+}
+
+function filterLeaderboard() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const filtered = globalPlayers.filter(p => p.name.toLowerCase().includes(query));
+  renderList(filtered);
+}
+
 async function loadLeaderboard(){
   const list=document.getElementById('lb-list');
+  document.getElementById('searchInput').value = '';
   list.innerHTML='<div class="lb-loading">Loading rankings...</div>';
   try{
     const res=await fetch('https://raw.githubusercontent.com/RoPotat0/Crystallized-Elo-System/main/elo-data.json?t='+Date.now());
     const json=await res.json();
-    const sorted=[...json.players].sort((a,b)=>b.elo-a.elo);
-    if(!sorted.length){list.innerHTML='<div class="lb-empty"><div class="empty-icon">🏆</div><p>No players yet — get in the server and start competing!</p></div>';return;}
-    const medals=['🥇','🥈','🥉'],tops=['top1','top2','top3'];
-    list.innerHTML=sorted.map((p,i)=>{
-      const r=getRank(p.elo,json.players),pos=medals[i]??`#${i+1}`,tc=tops[i]??'';
-      return `<div class="lb-row ${tc}" style="animation-delay:${i*0.05}s">
-        <div class="lb-pos">${pos}</div>
-        <div class="lb-name">${escapeHtml(p.name)}</div>
-        <span class="lb-badge" style="background:${r.bg};color:${r.color};border:1px solid ${r.color}40">${r.emoji} ${r.name}</span>
-        <div class="lb-elo">${p.elo}</div>
-      </div>`;
-    }).join('');
+    allData = json.players;
+    globalPlayers = [...json.players].sort((a,b)=>b.elo-a.elo);
+    
+    if(!globalPlayers.length){
+      list.innerHTML='<div class="lb-empty"><div class="empty-icon">🏆</div><p>No players yet — get in the server and start competing!</p></div>';
+      return;
+    }
+    
+    renderList(globalPlayers);
+    const now = new Date();
+    document.getElementById('last-updated').innerText = 'Last updated: ' + now.toLocaleTimeString();
+    
   }catch(err){
     list.innerHTML='<div class="lb-error">❌ Failed to load leaderboard.<br><small>Check console for details.</small></div>';
     console.error(err);
