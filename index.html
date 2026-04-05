@@ -10,29 +10,23 @@
     <style>
         :root { --bg: #080810; --card: #0f0f1a; --border: #1e1e2e; --text: #e8e8f0; --text-dim: #6b6b8a; --purple: #c026d3; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; padding: 0 16px 40px; display: flex; flex-direction: column; align-items: center; }
-        .site-header { text-align: center; padding: 30px 0 15px; width: 100%; max-width: 500px; }
-        .site-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.2rem, 7vw, 4rem); letter-spacing: 3px; background: linear-gradient(135deg, #e040fb, #7c3aed, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
-        .discord-links { margin-top: 10px; display: flex; gap: 15px; justify-content: center; }
-        .discord-links a { color: #5865f2; text-decoration: none; font-weight: 600; font-size: 13px; }
-        .search-bar { width: 100%; max-width: 500px; margin-bottom: 12px; padding: 12px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; color: white; font-size: 14px; outline: none; }
-        .stats-info { width: 100%; max-width: 500px; display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); margin-bottom: 8px; padding: 0 5px; }
-        .card { width: 100%; max-width: 500px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
-        .lb-list { padding: 15px; display: flex; flex-direction: column; gap: 8px; }
-        .lb-row { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; cursor: pointer; transition: 0.2s; }
-        .lb-row:hover { border-color: var(--purple); background: rgba(192,38,211,0.05); }
-        .row-main { display: flex; align-items: center; gap: 10px; }
-        .avatar { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #333; object-fit: cover; }
-        .lb-name { font-weight: 700; font-size: 14px; }
+        body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; padding: 20px; display: flex; flex-direction: column; align-items: center; }
+        .site-header { text-align: center; margin-bottom: 20px; width: 100%; max-width: 500px; }
+        .site-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: 3rem; letter-spacing: 2px; background: linear-gradient(135deg, #e040fb, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .discord-links { display: flex; gap: 15px; justify-content: center; margin-top: 10px; }
+        .discord-links a { color: #5865f2; text-decoration: none; font-weight: bold; font-size: 13px; }
+        .search-bar { width: 100%; max-width: 500px; padding: 12px; background: var(--card); border: 1px solid var(--border); border-radius: 10px; color: white; margin-bottom: 15px; outline: none; }
+        .stats-bar { width: 100%; max-width: 500px; display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); margin-bottom: 10px; }
+        .lb-card { width: 100%; max-width: 500px; background: var(--card); border: 1px solid var(--border); border-radius: 15px; overflow: hidden; }
+        .lb-row { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; padding: 12px 15px; border-bottom: 1px solid var(--border); cursor: pointer; transition: 0.2s; }
+        .lb-row:hover { background: #141424; }
+        .row-info { display: flex; align-items: center; gap: 12px; }
+        .avatar { width: 35px; height: 35px; border-radius: 50%; object-fit: cover; border: 1px solid #333; }
         .streak { color: #fbbf24; font-size: 11px; font-weight: bold; }
-        .lb-badge { font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; margin-top: 3px; display: inline-block; }
         .lb-elo { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; text-align: right; }
         .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; }
-        .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 20px; width: 90%; max-width: 320px; padding: 30px 20px; text-align: center; position: relative; }
-        .close { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; color: var(--text-dim); }
-        .modal-avatar { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--purple); margin-bottom: 12px; object-fit: cover; }
-        .m-username { color: var(--text-dim); font-size: 13px; margin-bottom: 15px; display: block; }
-        .m-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; background: #080810; padding: 15px; border-radius: 12px; font-size: 14px; }
+        .modal-content { background: var(--card); border: 1px solid var(--border); padding: 30px; border-radius: 20px; text-align: center; width: 300px; position: relative; }
+        .modal-avatar { width: 80px; height: 80px; border-radius: 50%; border: 3px solid var(--purple); margin-bottom: 15px; }
     </style>
 </head>
 <body>
@@ -45,96 +39,91 @@
     </div>
 </header>
 
-<input type="text" id="search" class="search-bar" placeholder="Search players..." onkeyup="filterLeaderboard()">
+<input type="text" id="search" class="search-bar" placeholder="Search for a player..." onkeyup="filter()">
 
-<div class="stats-info">
-    <span id="p-count">0 Players</span>
-    <span id="last-update">Updating...</span>
+<div class="stats-bar">
+    <span id="player-count">0 Players</span>
+    <span id="update-time">Syncing...</span>
 </div>
 
-<div class="card">
-    <div class="lb-list" id="lb-list">
-        <div style="text-align:center; padding:40px; color:#666;">Loading...</div>
-    </div>
-</div>
+<div class="lb-card" id="lb-list"></div>
 
-<div class="modal" id="profile-modal">
-    <div class="modal-content">
-        <span class="close" onclick="closeModal()">&times;</span>
-        <img id="m-avatar" class="modal-avatar" src="">
+<div class="modal" id="modal" onclick="closeModal()">
+    <div class="modal-content" onclick="event.stopPropagation()">
+        <img id="m-avatar" class="modal-avatar">
         <h2 id="m-name"></h2>
-        <span id="m-username" class="m-username"></span>
-        <div class="m-stat-grid">
-            <div>ELO: <strong id="m-elo" style="color:var(--purple)"></strong></div>
-            <div>Rank: <strong id="m-rank"></strong></div>
-            <div>Streak: <strong id="m-streak"></strong></div>
-            <div>Pos: <strong id="m-pos"></strong></div>
+        <p id="m-user" style="color:var(--text-dim); font-size:13px; margin-bottom:15px;"></p>
+        <div style="text-align:left; font-size:14px; display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+            <div>Elo: <b id="m-elo"></b></div>
+            <div>Rank: <b id="m-rank"></b></div>
+            <div>Pos: <b id="m-pos"></b></div>
+            <div>Streak: <b id="m-streak"></b></div>
         </div>
     </div>
 </div>
 
 <script>
-let allPlayers = [];
-
-function getRank(elo, players = []) {
-    const sorted = [...players].map(p => p.elo).sort((a,b)=>b-a);
-    const pos = sorted.findIndex(e => e <= elo);
-    const pct = (pos / sorted.length) * 100;
-    if (pct <= 0.03) return {name:'Cosmic', color:'#8A00C4', bg:'rgba(138,0,196,0.2)', emoji:'⚫'};
-    if (pct <= 1) return {name:'Prismatic', color:'#FF0080', bg:'rgba(255,0,128,0.2)', emoji:'⭕'};
-    if (pct <= 6) return {name:'Brilliant', color:'#FFFF00', bg:'rgba(255,255,0,0.2)', emoji:'⭐'};
-    if (pct <= 27.4) return {name:'Lustrous', color:'#BF00FF', bg:'rgba(191,0,255,0.2)', emoji:'🟣'};
-    if (pct <= 65.57) return {name:'Refined', color:'#00BFFF', bg:'rgba(0,191,255,0.2)', emoji:'🔵'};
-    return {name:'Faint', color:'#00FF7F', bg:'rgba(0,255,127,0.2)', emoji:'🟢'};
+let players = [];
+function getRank(elo, list) {
+    const sorted = [...list].sort((a,b)=>b.elo-a.elo);
+    const pos = sorted.findIndex(p => p.elo <= elo);
+    const pct = (pos/sorted.length)*100;
+    if (pct <= 0.03) return {n:'Cosmic', e:'⚫', c:'#8A00C4'};
+    if (pct <= 1) return {n:'Prismatic', e:'⭕', c:'#FF0080'};
+    if (pct <= 6) return {n:'Brilliant', e:'⭐', c:'#FFFF00'};
+    if (pct <= 27.4) return {n:'Lustrous', e:'🟣', c:'#BF00FF'};
+    if (pct <= 65.57) return {n:'Refined', e:'🔵', c:'#00BFFF'};
+    return {n:'Faint', e:'🟢', c:'#00FF7F'};
 }
 
-async function loadLeaderboard() {
-    try {
-        const res = await fetch('https://raw.githubusercontent.com/RoPotat0/Crystallized-Elo-System/main/elo-data.json?t=' + Date.now());
-        const json = await res.json();
-        allPlayers = json.players.sort((a, b) => b.elo - a.elo);
-        document.getElementById('p-count').innerText = `${allPlayers.length} Total Players`;
-        document.getElementById('last-update').innerText = json.lastUpdated ? `Last updated: ${json.lastUpdated}` : 'Recently updated';
-        renderLeaderboard(allPlayers);
-    } catch (err) { document.getElementById('lb-list').innerHTML = 'Error loading data.'; }
+async function load() {
+    const res = await fetch('https://raw.githubusercontent.com/RoPotat0/Crystallized-Elo-System/main/elo-data.json?t='+Date.now());
+    const data = await res.json();
+    players = data.players.sort((a,b)=>b.elo-a.elo);
+    document.getElementById('player-count').innerText = players.length + " Players";
+    document.getElementById('update-time').innerText = "Last updated: " + (data.lastUpdated || 'Recently');
+    render(players);
 }
 
-function renderLeaderboard(players) {
-    const listEl = document.getElementById('lb-list');
-    listEl.innerHTML = players.map((p, i) => {
-        const rank = getRank(p.elo, allPlayers);
-        const streak = p.streak > 0 ? `<span class="streak">🔥${p.streak}</span>` : '';
-        const displayIdx = allPlayers.indexOf(p) + 1;
-        return `<div class="lb-row" onclick="showProfile('${p.discordId}')">
-            <div style="font-weight:bold; color:var(--text-dim);">#${displayIdx}</div>
-            <div class="row-main"><img src="${p.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" class="avatar">
-            <div class="name-container"><div class="lb-name">${p.name}</div>${streak}</div></div>
-            <div style="text-align:right;"><div class="lb-elo">${p.elo}</div>
-            <span class="lb-badge" style="background:${rank.bg}; color:${rank.color}; border:1px solid ${rank.color}40">${rank.emoji} ${rank.name}</span></div>
+function render(list) {
+    const container = document.getElementById('lb-list');
+    container.innerHTML = list.map((p, i) => {
+        const r = getRank(p.elo, players);
+        return `<div class="lb-row" onclick="show('${p.discordId}')">
+            <div style="color:var(--text-dim); font-weight:bold;">#${players.indexOf(p)+1}</div>
+            <div class="row-info">
+                <img src="${p.avatar}" class="avatar">
+                <div>
+                    <div class="lb-name">${p.name}</div>
+                    ${p.streak > 0 ? `<span class="streak">🔥${p.streak}</span>` : ''}
+                </div>
+            </div>
+            <div class="lb-elo">
+                ${p.elo}<br><span style="font-size:9px; color:${r.c}">${r.e} ${r.n}</span>
+            </div>
         </div>`;
     }).join('');
 }
 
-function filterLeaderboard() {
-    const val = document.getElementById('search').value.toLowerCase();
-    const filtered = allPlayers.filter(p => p.name.toLowerCase().includes(val));
-    renderLeaderboard(filtered);
+function filter() {
+    const q = document.getElementById('search').value.toLowerCase();
+    render(players.filter(p => p.name.toLowerCase().includes(q)));
 }
 
-function showProfile(id) {
-    const p = allPlayers.find(x => x.discordId === id);
-    const rank = getRank(p.elo, allPlayers);
-    document.getElementById('m-avatar').src = p.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
+function show(id) {
+    const p = players.find(x => x.discordId === id);
+    const r = getRank(p.elo, players);
+    document.getElementById('m-avatar').src = p.avatar;
     document.getElementById('m-name').innerText = p.name;
-    document.getElementById('m-username').innerText = `@${p.username || 'unknown'}`;
+    document.getElementById('m-user').innerText = "@" + (p.username || "unknown");
     document.getElementById('m-elo').innerText = p.elo;
-    document.getElementById('m-rank').innerText = rank.name;
+    document.getElementById('m-rank').innerText = r.n;
+    document.getElementById('m-pos').innerText = "#" + (players.indexOf(p)+1);
     document.getElementById('m-streak').innerText = p.streak || 0;
-    document.getElementById('m-pos').innerText = `#${allPlayers.indexOf(p)+1}`;
-    document.getElementById('profile-modal').style.display = 'flex';
+    document.getElementById('modal').style.display = 'flex';
 }
-function closeModal() { document.getElementById('profile-modal').style.display = 'none'; }
-window.onload = loadLeaderboard;
+function closeModal() { document.getElementById('modal').style.display = 'none'; }
+window.onload = load;
 </script>
 </body>
 </html>
