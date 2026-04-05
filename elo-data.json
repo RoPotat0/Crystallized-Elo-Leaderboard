@@ -4,7 +4,9 @@
       "name": "That1doeg",
       "discordId": "941550088684208180",
       "elo": 200,
-      "streak": 0
+      "streak": 0,
+      "avatar": "https://cdn.discordapp.com/avatars/941550088684208180/03a3cdc7de415eca22a1800cd10e1215.png?size=1024",
+      "username": "thatdoeg"
     },
     {
       "name": "RoPotat0",
@@ -14,5 +16,5 @@
       "username": "ropotato."
     }
   ],
-  "lastUpdated": "2026-04-05T08:55:00.261184"
+  "lastUpdated": "2026-04-05T08:55:01.551814"
 }
