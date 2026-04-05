@@ -481,12 +481,12 @@ function switchTab(tab) {
 
 // ─── RANK HELPERS ────────────────────────────────────────────────────────────
 function getRank(elo) {
-  if (elo < 600)  return { name:'Bronze',   color:'#cd7f32', bg:'rgba(205,127,50,0.2)',  emoji:'🥉' };
-  if (elo < 900)  return { name:'Silver',   color:'#c0c0c0', bg:'rgba(192,192,192,0.2)', emoji:'🥈' };
-  if (elo < 1200) return { name:'Gold',     color:'#ffd700', bg:'rgba(255,215,0,0.2)',   emoji:'🥇' };
-  if (elo < 1500) return { name:'Platinum', color:'#e5e4e2', bg:'rgba(229,228,226,0.2)', emoji:'💎' };
-  if (elo < 1800) return { name:'Diamond',  color:'#67e8f9', bg:'rgba(103,232,249,0.2)', emoji:'💠' };
-  return           { name:'Champion', color:'#c026d3', bg:'rgba(192,38,211,0.2)',  emoji:'👑' };
+  if (elo < 600) return { name:'Faint',     color:'#00FF7F', bg:'rgba(0,255,127,0.2)',   emoji:'🟢' };
+  if (elo < 900) return { name:'Refined',   color:'#00BFFF', bg:'rgba(0,191,255,0.2)',   emoji:'🔵' };
+  if (elo < 1200) return { name:'Lustrous', color:'#BF00FF', bg:'rgba(191,0,255,0.2)',   emoji:'🟣' };
+  if (elo < 1500) return { name:'Brilliant',color:'#FFFF00', bg:'rgba(255,255,0,0.2)',   emoji:'⭐' };
+  if (elo < 1800) return { name:'Prismatic',color:'#FF0080', bg:'rgba(255,0,128,0.2)',   emoji:'⭕' };
+  return { name:'Cosmic',    color:'#8A00C4', bg:'rgba(138,0,196,0.2)', emoji:'⚫' };
 }
 
 function rankIndex(elo) {
