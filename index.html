@@ -4,121 +4,35 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Crystal Ranks</title>
-    <meta property="og:title" content="Crystal Ranks">
-    <meta property="og:description" content="ELO leaderboard for Crystallized Competitive">
     <link rel="icon" href="Crystal Ranks.png" type="image/png">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet">
-
     <style>
-        :root {
-            --bg: #080810;
-            --card: #0f0f1a;
-            --border: #1e1e2e;
-            --text: #e8e8f0;
-            --text-dim: #6b6b8a;
-            --purple: #c026d3;
-            --success: #22c55e;
-        }
+        :root { --bg: #080810; --card: #0f0f1a; --border: #1e1e2e; --text: #e8e8f0; --text-dim: #6b6b8a; --purple: #c026d3; }
         * { box-sizing: border-box; margin: 0; padding: 0; }
-        body {
-            background: var(--bg);
-            color: var(--text);
-            font-family: 'DM Sans', sans-serif;
-            min-height: 100vh;
-            padding: 0 16px 40px;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        }
-        .site-header {
-            text-align: center;
-            padding: 30px 0 15px;
-            width: 100%; max-width: 520px;
-        }
-        .site-header h1 {
-            font-family: 'Bebas Neue', sans-serif;
-            font-size: clamp(2.5rem, 7vw, 4.5rem);
-            letter-spacing: 3px;
-            background: linear-gradient(135deg, #e040fb, #7c3aed, #60a5fa);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .discord-links {
-            margin-top: 10px;
-            display: flex; gap: 15px;
-            justify-content: center; flex-wrap: wrap;
-        }
+        body { background: var(--bg); color: var(--text); font-family: 'DM Sans', sans-serif; padding: 0 16px 40px; display: flex; flex-direction: column; align-items: center; }
+        .site-header { text-align: center; padding: 30px 0 15px; width: 100%; max-width: 500px; }
+        .site-header h1 { font-family: 'Bebas Neue', sans-serif; font-size: clamp(2.5rem, 7vw, 4.5rem); letter-spacing: 3px; background: linear-gradient(135deg, #e040fb, #7c3aed, #60a5fa); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+        .discord-links { margin-top: 10px; display: flex; gap: 15px; justify-content: center; }
         .discord-links a { color: #5865f2; text-decoration: none; font-weight: 600; font-size: 14px; }
-
-        .search-bar {
-            width: 100%; max-width: 520px;
-            margin-bottom: 12px;
-            padding: 12px 16px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            color: white;
-            font-size: 14px;
-        }
-        .stats-info {
-            width: 100%; max-width: 520px;
-            display: flex; justify-content: space-between;
-            font-size: 12px; color: var(--text-dim);
-            margin-bottom: 8px; padding: 0 5px;
-        }
-
-        .card {
-            width: 100%; max-width: 520px;
-            background: var(--card);
-            border: 1px solid var(--border);
-            border-radius: 16px;
-            overflow: hidden;
-        }
+        .search-bar { width: 100%; max-width: 500px; margin-bottom: 12px; padding: 12px 16px; background: var(--card); border: 1px solid var(--border); border-radius: 12px; color: white; font-size: 14px; outline: none; }
+        .stats-info { width: 100%; max-width: 500px; display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); margin-bottom: 8px; padding: 0 5px; }
+        .card { width: 100%; max-width: 500px; background: var(--card); border: 1px solid var(--border); border-radius: 16px; overflow: hidden; }
         .lb-list { padding: 15px; display: flex; flex-direction: column; gap: 8px; }
-        .lb-row {
-            display: grid;
-            grid-template-columns: 40px 1fr auto;
-            align-items: center;
-            gap: 12px;
-            background: rgba(255,255,255,0.02);
-            border: 1px solid var(--border);
-            border-radius: 12px;
-            padding: 10px 14px;
-            cursor: pointer;
-            transition: 0.2s;
-        }
+        .lb-row { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; gap: 12px; background: rgba(255,255,255,0.02); border: 1px solid var(--border); border-radius: 12px; padding: 10px 14px; cursor: pointer; transition: 0.2s; }
         .lb-row:hover { border-color: var(--purple); background: rgba(192,38,211,0.05); }
-        
         .row-main { display: flex; align-items: center; gap: 10px; }
         .avatar { width: 36px; height: 36px; border-radius: 50%; border: 1px solid #333; }
-        .name-container { display: flex; flex-direction: column; }
-        .lb-name { font-weight: 700; font-size: 14.5px; }
-        .streak { color: #fbbf24; font-size: 12px; font-weight: bold; }
-        
-        .lb-badge {
-            font-size: 9px; font-weight: 800;
-            padding: 2px 8px; border-radius: 999px;
-            text-transform: uppercase; margin-top: 3px;
-            display: inline-block;
-        }
+        .lb-name { font-weight: 700; font-size: 14px; }
+        .streak { color: #fbbf24; font-size: 11px; font-weight: bold; }
+        .lb-badge { font-size: 9px; font-weight: 800; padding: 2px 8px; border-radius: 999px; text-transform: uppercase; margin-top: 3px; display: inline-block; }
         .lb-elo { font-family: 'Bebas Neue', sans-serif; font-size: 1.3rem; text-align: right; }
-
-        /* Modal */
-        .modal {
-            display: none; position: fixed; inset: 0;
-            background: rgba(0,0,0,0.9); z-index: 1000;
-            align-items: center; justify-content: center;
-        }
-        .modal-content {
-            background: var(--card); border: 1px solid var(--border);
-            border-radius: 20px; width: 90%; max-width: 340px;
-            padding: 30px 20px; text-align: center; position: relative;
-        }
+        .modal { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.9); z-index: 1000; align-items: center; justify-content: center; }
+        .modal-content { background: var(--card); border: 1px solid var(--border); border-radius: 20px; width: 90%; max-width: 320px; padding: 30px 20px; text-align: center; position: relative; }
         .close { position: absolute; top: 10px; right: 15px; font-size: 28px; cursor: pointer; color: var(--text-dim); }
-        .modal-avatar { width: 100px; height: 100px; border-radius: 50%; border: 4px solid var(--purple); margin-bottom: 15px; }
-        .m-username { color: var(--text-dim); font-size: 14px; margin-bottom: 15px; display: block; }
-        .m-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; background: #080810; padding: 15px; border-radius: 12px; }
+        .modal-avatar { width: 90px; height: 90px; border-radius: 50%; border: 3px solid var(--purple); margin-bottom: 12px; }
+        .m-username { color: var(--text-dim); font-size: 13px; margin-bottom: 15px; display: block; }
+        .m-stat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; text-align: left; background: #080810; padding: 15px; border-radius: 12px; font-size: 14px; }
     </style>
 </head>
 <body>
@@ -135,23 +49,21 @@
 
 <div class="stats-info">
     <span id="p-count">0 Players</span>
-    <span id="last-update">Syncing...</span>
+    <span id="last-update">Updating...</span>
 </div>
 
 <div class="card">
     <div class="lb-list" id="lb-list">
-        <div style="text-align:center; padding:40px; color:#666;">Loading rankings...</div>
+        <div style="text-align:center; padding:40px; color:#666;">Loading...</div>
     </div>
 </div>
 
-<!-- Modal -->
 <div class="modal" id="profile-modal">
     <div class="modal-content">
         <span class="close" onclick="closeModal()">&times;</span>
         <img id="m-avatar" class="modal-avatar" src="">
-        <h2 id="m-name" style="margin-bottom:2px;"></h2>
+        <h2 id="m-name"></h2>
         <span id="m-username" class="m-username"></span>
-        
         <div class="m-stat-grid">
             <div>ELO: <strong id="m-elo" style="color:var(--purple)"></strong></div>
             <div>Rank: <strong id="m-rank"></strong></div>
@@ -163,7 +75,6 @@
 
 <script>
 let allPlayers = [];
-
 function getRank(elo, players = []) {
     const sorted = [...players].map(p => p.elo).sort((a,b)=>b-a);
     const pos = sorted.findIndex(e => e <= elo);
@@ -181,43 +92,24 @@ async function loadLeaderboard() {
         const res = await fetch('https://raw.githubusercontent.com/RoPotat0/Crystallized-Elo-System/main/elo-data.json?t=' + Date.now());
         const json = await res.json();
         allPlayers = json.players.sort((a, b) => b.elo - a.elo);
-        
-        document.getElementById('p-count').innerText = `${allPlayers.length} Players`;
-        if(json.lastUpdated) {
-            const date = new Date(json.lastUpdated);
-            document.getElementById('last-update').innerText = `Last Updated: ${date.toLocaleTimeString()}`;
-        }
-
+        document.getElementById('p-count').innerText = `${allPlayers.length} Total Players`;
+        document.getElementById('last-update').innerText = json.lastUpdated ? `Last updated: ${json.lastUpdated}` : 'Recently updated';
         renderLeaderboard(allPlayers);
-    } catch (err) {
-        document.getElementById('lb-list').innerHTML = 'Error loading data.';
-    }
+    } catch (err) { document.getElementById('lb-list').innerHTML = 'Error loading data.'; }
 }
 
 function renderLeaderboard(players) {
     const listEl = document.getElementById('lb-list');
     listEl.innerHTML = players.map((p, i) => {
         const rank = getRank(p.elo, allPlayers);
-        const streakText = p.streak > 0 ? `<span class="streak">🔥${p.streak}</span>` : '';
-        const realPos = allPlayers.indexOf(p) + 1;
-        
-        return `
-            <div class="lb-row" onclick="showProfile('${p.discordId}')">
-                <div style="font-size:1.1rem; font-weight:bold; color:var(--text-dim);">#${realPos}</div>
-                <div class="row-main">
-                    <img src="${p.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" class="avatar">
-                    <div class="name-container">
-                        <div class="lb-name">${p.name}</div>
-                        ${streakText}
-                    </div>
-                </div>
-                <div style="text-align:right;">
-                    <div class="lb-elo">${p.elo}</div>
-                    <span class="lb-badge" style="background:${rank.bg}; color:${rank.color}; border:1px solid ${rank.color}40">
-                        ${rank.emoji} ${rank.name}
-                    </span>
-                </div>
-            </div>`;
+        const streak = p.streak > 0 ? `<span class="streak">🔥${p.streak}</span>` : '';
+        return `<div class="lb-row" onclick="showProfile('${p.discordId}')">
+            <div style="font-weight:bold; color:var(--text-dim);">#${allPlayers.indexOf(p)+1}</div>
+            <div class="row-main"><img src="${p.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png'}" class="avatar">
+            <div class="name-container"><div class="lb-name">${p.name}</div>${streak}</div></div>
+            <div style="text-align:right;"><div class="lb-elo">${p.elo}</div>
+            <span class="lb-badge" style="background:${rank.bg}; color:${rank.color}; border:1px solid ${rank.color}40">${rank.emoji} ${rank.name}</span></div>
+        </div>`;
     }).join('');
 }
 
@@ -230,22 +122,16 @@ function filterLeaderboard() {
 function showProfile(id) {
     const p = allPlayers.find(x => x.discordId === id);
     const rank = getRank(p.elo, allPlayers);
-    const pos = allPlayers.indexOf(p) + 1;
-
     document.getElementById('m-avatar').src = p.avatar || 'https://cdn.discordapp.com/embed/avatars/0.png';
     document.getElementById('m-name').innerText = p.name;
     document.getElementById('m-username').innerText = `@${p.username || 'unknown'}`;
     document.getElementById('m-elo').innerText = p.elo;
     document.getElementById('m-rank').innerText = rank.name;
     document.getElementById('m-streak').innerText = p.streak || 0;
-    document.getElementById('m-pos').innerText = `#${pos}`;
-    
+    document.getElementById('m-pos').innerText = `#${allPlayers.indexOf(p)+1}`;
     document.getElementById('profile-modal').style.display = 'flex';
 }
-
 function closeModal() { document.getElementById('profile-modal').style.display = 'none'; }
-
-window.onclick = (e) => { if(e.target == document.getElementById('profile-modal')) closeModal(); }
 window.onload = loadLeaderboard;
 </script>
 </body>
