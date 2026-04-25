@@ -35,6 +35,8 @@
         .stats-bar { width: 100%; max-width: 500px; display: flex; justify-content: space-between; font-size: 11px; color: var(--text-dim); margin-bottom: 10px; }
         .lb-card { width: 100%; max-width: 500px; background: var(--card); border: 1px solid var(--border); border-radius: 15px; overflow: hidden; transition: opacity 0.2s ease; }
         .lb-card.loading { opacity: 0.3; }
+        .skeleton { background: linear-gradient(90deg, #1a1a2e 25%, #2a2a4e 50%, #1a1a2e 75%); background-size: 200% 100%; animation: shimmer 0.8s infinite; border-radius: 6px; }
+        @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
         .lb-row { display: grid; grid-template-columns: 40px 1fr auto; align-items: center; padding: 12px 15px; border-bottom: 1px solid var(--border); cursor: pointer; }
         .lb-row:hover { background: #141424; }
         .row-info { display: flex; align-items: center; gap: 12px; }
@@ -101,9 +103,21 @@ function getRank(elo, list) {
     return {n:'Faint', e:'🟢', c:'#00FF7F'};
 }
 
-async function fetchData() {
+async function fetchData(showSkeleton = false) {
     const lb = document.getElementById('lb-list');
-    lb.classList.add('loading');
+    if (showSkeleton) {
+        lb.innerHTML = Array(8).fill(`
+            <div class="lb-row" style="pointer-events:none">
+                <div class="skeleton" style="width:24px;height:16px;"></div>
+                <div class="row-info">
+                    <div class="skeleton" style="width:35px;height:35px;border-radius:50%;flex-shrink:0;"></div>
+                    <div class="skeleton" style="width:120px;height:14px;"></div>
+                </div>
+                <div class="lb-elo-cell">
+                    <div class="skeleton" style="width:50px;height:22px;margin-left:auto;"></div>
+                </div>
+            </div>`).join('');
+    }
     try {
         const res = await fetch('https://raw.githubusercontent.com/RoPotat0/Crystallized-Elo-System/main/elo-data.json?nocache=' + Math.random());
         const data = await res.json();
@@ -124,7 +138,7 @@ async function load() {
     void btn.offsetWidth; // force reflow so animation restarts
     btn.classList.add('spinning');
     btn.addEventListener('animationend', () => btn.classList.remove('spinning'), { once: true });
-    await fetchData();
+    await fetchData(true);
 }
 
 function render(list) {
