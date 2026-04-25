@@ -106,6 +106,8 @@ function getRank(elo, list) {
 async function fetchData(showSkeleton = false) {
     const lb = document.getElementById('lb-list');
     if (showSkeleton) {
+        document.getElementById('player-count').innerText = "0 Players";
+        document.getElementById('update-time').innerText = "Syncing...";
         lb.innerHTML = Array(8).fill(`
             <div class="lb-row" style="pointer-events:none">
                 <div class="skeleton" style="width:24px;height:16px;"></div>
